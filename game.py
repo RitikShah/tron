@@ -67,7 +67,7 @@ def newgame():
 def gameover():
 	gamedisplay.fill(black)
 	over = True
-	
+
 	displaytext("Game Over", color = red, size = 80)
 	displaytext("C to play", 0, 60, white)
 	displaytext("Q to quit", 0, 80, white)
@@ -96,16 +96,22 @@ def gameloop():
 			tron.controls(key)
 
 		# Display
-		gamedisplay.fill(black)		
+		gamedisplay.fill(black)
+
+		deadbikes = 0	
 		for bike in tron.bikes:
 			for index in range(len(bike.seglist)):
 				if not bike.dead:
 					pygame.draw.rect(gamedisplay, bike.getcolor(), bike.displist(index))
+			if bike.dead:
+				deadbikes += 1
+
+
+
+		if deadbikes >= len(tron.bikes)-1:
+			gameover()
 
 		tron.update()
-
-		if tron.bikes[0].seglist[0].x > windowsize[0] or tron.bikes[0].seglist[0].x < 0 or tron.bikes[0].seglist[0].y > windowsize[1] or tron.bikes[0].seglist[0].y < 0:
-			gameover()
 
 		pygame.display.update()
 		clock.tick(fps)

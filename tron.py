@@ -50,12 +50,16 @@ def keylistener(bike, key):
 		bike.dir = 'r'
 
 def update():
+	movement()
+	collide()
+	border()
+
+def movement():
 	for bike in bikes:
 		if (bike.change_x != 0 or bike.change_y != 0) and not bike.dead:
 			bike.seglist.append(bike.Segment(bike.getx(0), bike.gety(0)))
 			bike.setx(0, bike.getx(0) + bike.change_x)
 			bike.sety(0, bike.gety(0) + bike.change_y)
-	collide()
 
 def collide():
 	for head in bikes:
@@ -68,6 +72,11 @@ def collide():
 				if head.seglist[0] is not seg:
 					if head.seglist[0].x == seg.x and head.seglist[0].y == seg.y:
 						kill(head)
+
+def border():
+	for bike in bikes:
+		if bike.seglist[0].x > windowsize[0] or bike.seglist[0].x < 0 or bike.seglist[0].y > windowsize[1] or bike.seglist[0].y < 0:
+			kill(bike)
 
 def kill(bike):
 	bike.dead = True
@@ -85,6 +94,8 @@ class Bike:
 
 		self.change_x  = 0
 		self.change_y  = 0
+
+		self.anim	   = 0
 
 		self.seglist   = [self.Segment(x, y)]
 		self.dir       = ''
@@ -113,3 +124,12 @@ class Bike:
 
 	def displist(self, index):
 		return [self.getx(index), self.gety(index), self.blocksize, self.blocksize]
+
+	'''
+	def selfdestruct(self):
+		angle = randint(0,24)
+		seg = self.seglist.pop(-1)
+
+	'''
+
+
