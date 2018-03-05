@@ -6,6 +6,6 @@ Date: Feb 26 '18
 
 '''
 
-game = game.Game('Comets - By Ritik Shah')
+game.init('Comets - By Ritik Shah')
 
 game.newgame()
