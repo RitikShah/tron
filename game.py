@@ -105,9 +105,7 @@ def gameloop():
 					pygame.draw.rect(gamedisplay, bike.getcolor(), bike.displist(index))
 			if bike.dead:
 				deadbikes += 1
-
-
-
+		
 		if deadbikes >= len(tron.bikes)-1:
 			gameover()
 
