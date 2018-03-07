@@ -2,12 +2,12 @@ import pygame
 import random
 from color import *
 
-def init(ws):
+def init():
 	global blocksize, bikes, windowsize
-	windowsize = ws
+	windowsize = pygame.display.get_surface().get_size()
 
 	blocksize = 2
-	bikes = [Bike(25, ws[1]-25, blocksize), Bike(ws[0]-25, 25, blocksize)]
+	bikes = [Bike("Player 1", 25, windowsize[1]-25, blocksize), Bike("Player 2", windowsize[0]-25, 25, blocksize)]
 
 def reset(x, y):
 	global blocksize, bikes
@@ -83,16 +83,15 @@ def border():
 		if bike.seglist[0].x > windowsize[0] or bike.seglist[0].x < 0 or bike.seglist[0].y > windowsize[1] or bike.seglist[0].y < 0:
 			bike.isdying = True
 
-def kill(bike):
-	bike.dead = True
-
 class Bike:
 	class Segment:
 		def __init__(self, x, y):
 			self.x = x
 			self.y = y
 
-	def __init__(self, x, y, blocksize):
+	def __init__(self, name, x, y, blocksize):
+		self.name 	   = name
+
 		self.blocksize = blocksize
 		self.lead_x    = x
 		self.lead_y	   = y
@@ -132,11 +131,6 @@ class Bike:
 		return [self.getx(index), self.gety(index), self.blocksize, self.blocksize]
 
 	def selfdestruct(self):
-		'''distx = randint(blocksize, blocksize * 2)
-		disty = randint(blocksize, blocksize * 2)
-		
-		x, y = seg.x, seg.y
-		'''
 		try:
 			self.seglist.pop()
 			self.seglist.pop()

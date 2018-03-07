@@ -6,6 +6,5 @@ Date: Feb 26 '18
 
 '''
 
-game.init('Comets - By Ritik Shah')
-
+game.init((800, 600))
 game.newgame()
