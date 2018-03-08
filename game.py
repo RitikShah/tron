@@ -7,7 +7,7 @@ from color import *
 
 def init(ws):
 	global crashed, windowsize, blocksize, fps, keynone, clock, gamedisplay, keydict
-	global s_main, s_dead, t_play, t_quit, t_help
+	global s_main, s_dead, s_help, t_play, t_quit, t_help, t_back
 	pygame.init()
 
 	crashed = False
@@ -23,15 +23,27 @@ def init(ws):
 	tron.init()
 	blocksize = tron.blocksize
 
-	t_title = Text(gamedisplay, 'TR0N', green, 100)
-	t_gameover = Text(gamedisplay, 'Game Over', red, 80)
+	t_title  = Text(gamedisplay, 'TR0N', green, 100)
+	t_over   = Text(gamedisplay, 'Game Over', red, 80)
 
-	t_play  = Text(gamedisplay, 'C to play', yoffset=60)
-	t_quit  = Text(gamedisplay, 'Q to quit', yoffset=80)
-	t_help  = Text(gamedisplay, 'H for more help', yoffset=100)
+	t_play   = Text(gamedisplay, 'C to play', yoffset=60)
+	t_quit   = Text(gamedisplay, 'Q to quit', yoffset=80)
+	t_help   = Text(gamedisplay, 'H for more help', yoffset=100)
+	t_back   = Text(gamedisplay, 'B to go back to the main menu', yoffset=100)
 
-	s_main  = Screen(gamedisplay, t_title, c=t_play, q=t_quit)
-	s_dead  = Screen(gamedisplay, t_gameover, c=t_play, q=t_quit)
+	# help
+	t_htitle = Text(gamedisplay, 'Help Screen', blue, 70, ycenter=False, yoffset=60)
+	t_line1  = Text(gamedisplay, 'Rules: Do not touch the line the border', yoffset=-40)
+	t_line2  = Text(gamedisplay, 'There are two players: ', yoffset=0)
+	t_line3  = Text(gamedisplay, 'Top right is player 1', yoffset=20)
+	t_line4  = Text(gamedisplay, 'Bottom left is player 2', yoffset=40)
+	t_line5  = Text(gamedisplay, 'Try to survive as long as possible!', ycenter=False, yoffset=520)
+	t_line6  = Text(gamedisplay, 'Good Luck! (Press B to go back)', ycenter=False, yoffset=540)
+	t_line7  = Text(gamedisplay, 'Press Q to quit', ycenter=False, yoffset=560)
+
+	s_main   = Screen(gamedisplay, t_title, c=t_play, q=t_quit, h=t_help)
+	s_dead   = Screen(gamedisplay, t_over, c=t_play, q=t_quit, b=t_back)
+	s_help   = Screen(gamedisplay, t_htitle, t_line1, t_line2, t_line3, t_line4, t_line5, b=t_line6, q=t_line7)
 
 def xbutton():
 	for event in pygame.event.get():
@@ -42,92 +54,29 @@ def quitgame():
 	pygame.quit()
 	quit()
 
-'''
-def textobjects(text, color=red, size=20, font_type='fonts/Courier New.ttf'):
-	text = str(text)
-	font = pygame.font.Font(font_type, size)
-	textsurf = font.render(text, True, color)
-	return textsurf, textsurf.get_rect()
-
-def displaytext(text, x_displace=0, y_displace=0, color=red, size=20):
-	textsurf, textrect = textobjects(text, color, size)
-	textrect.center = (windowsize[0]/2) + x_displace, (windowsize[1]/2) + y_displace
-	gamedisplay.blit(textsurf, textrect)
-'''
-'''
-def screen(title, sub1, sub2):
-	gamedisplay.fill(black)
-	title.displaytext()
-	sub1.displaytext()
-	sub2.displaytext()
-	pygame.display.update()
-
-def screenupdate()
-
-def startscreen():
-	intro = True
-	gamedisplay.fill(black)
-	displaytext("TR0N", color=green, size = 100)
-	
-	displaytext("C to play", 0, 60, white)
-	displaytext("Q to quit", 0, 80, white)
-	pygame.display.update()
-
-	while intro:
-		xbutton()
-		key = pygame.key.get_pressed()
-		if key[pygame.K_q]:
-			quitgame()
-		if key[pygame.K_c]:
-			intro = False
-			gameloop()
-
-		clock.tick(fps/4)
-'''
-
 def newgame():
-	output = s_main.loop()
-	if output == pygame.K_q:
-		quitgame()
-	elif output == pygame.K_c:
-		gameloop()
-
-'''
-def gameover():
-	gamedisplay.fill(black)
-	over = True
-
-	displaytext("Game Over", color = red, size = 80)
-	displaytext("C to play", 0, 60, white)
-	displaytext("Q to quit", 0, 80, white)
-	pygame.display.update()
-
-	while over:
-		xbutton()
-		key = pygame.key.get_pressed()
-		if key[pygame.K_q]:
-			quitgame()
-		elif key[pygame.K_c]:
-			key = keynone
-			over = False
-			init('Comets - By Ritik Shah')
-			newgame()
-'''
+	key(s_main.loop())
 
 def gamewin(bike):
-	s_win  = Screen(gamedisplay, Text(gamedisplay, bike.name + ' won!', bike.color, 80), c=t_play, q=t_quit)
-	output = s_win.loop()
-	if output == pygame.K_q:
-		quitgame()
-	elif output == pygame.K_c:
-		init((800, 600))
+	s_win  = Screen(gamedisplay, Text(gamedisplay, bike.name + ' won!', bike.color, 80), c=t_play, q=t_quit, b=t_back)
+	key(s_win.loop())
 
 def gameover():
-	output = s_dead.loop()
+	key(s_dead.loop())
+
+def key(output):
 	if output == pygame.K_q:
 		quitgame()
 	elif output == pygame.K_c:
-		init((800, 600))
+		tron.init()
+		gameloop()
+	elif output == pygame.K_h:
+		help()
+	elif output == pygame.K_b:
+		newgame()
+
+def help():
+	key(s_help.loop())
 
 def gameloop():
 	while not crashed:
