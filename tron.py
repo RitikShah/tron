@@ -132,9 +132,11 @@ class Bike:
 
 	def selfdestruct(self):
 		try:
-			self.seglist.pop()
-			self.seglist.pop()
-			self.seglist.pop()
+			rate = round(len(self.seglist)/40)
+			if rate < 3:
+				rate = 3
+			for i in range(0,rate):
+				self.seglist.pop()
 		except IndexError:
 			self.isdying = False
 			self.dead    = True

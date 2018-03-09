@@ -5,10 +5,15 @@ import tron
 from text import *
 from color import *
 
-def init(ws):
+def init(ws, sound):
 	global crashed, windowsize, blocksize, fps, keynone, clock, gamedisplay, keydict
 	global s_main, s_dead, s_help, t_play, t_quit, t_help, t_back
 	pygame.init()
+	if sound == 'y':
+		pygame.mixer.init()
+		musicloop = pygame.mixer.Sound('sounds/musicloop.wav')
+		musicloop.play(-1)
+		musicloop.set_volume(0.5)
 
 	crashed = False
 	windowsize = ws
@@ -33,17 +38,19 @@ def init(ws):
 
 	# help
 	t_htitle = Text(gamedisplay, 'Help Screen', blue, 70, ycenter=False, yoffset=60)
-	t_line1  = Text(gamedisplay, 'Rules: Do not touch the line the border', yoffset=-40)
-	t_line2  = Text(gamedisplay, 'There are two players: ', yoffset=0)
-	t_line3  = Text(gamedisplay, 'Top right is player 1', yoffset=20)
-	t_line4  = Text(gamedisplay, 'Bottom left is player 2', yoffset=40)
-	t_line5  = Text(gamedisplay, 'Try to survive as long as possible!', ycenter=False, yoffset=520)
-	t_line6  = Text(gamedisplay, 'Good Luck! (Press B to go back)', ycenter=False, yoffset=540)
-	t_line7  = Text(gamedisplay, 'Press Q to quit', ycenter=False, yoffset=560)
+	t_hline1  = Text(gamedisplay, 'Rules: Do not touch the line the border', yoffset=-40)
+	t_hline2  = Text(gamedisplay, 'There are two players: ', yoffset=0)
+	t_hline3  = Text(gamedisplay, 'Top right is player 1', yoffset=20)
+	t_hline4  = Text(gamedisplay, 'Bottom left is player 2', yoffset=40)
+	t_hline5  = Text(gamedisplay, 'Try to survive as long as possible!', ycenter=False, yoffset=520)
+	t_hline6  = Text(gamedisplay, 'Good Luck! (Press B to go back)', ycenter=False, yoffset=540)
+	t_hline7  = Text(gamedisplay, 'Press Q to quit', ycenter=False, yoffset=560)
+
+	# player name choosing screen
 
 	s_main   = Screen(gamedisplay, t_title, c=t_play, q=t_quit, h=t_help)
 	s_dead   = Screen(gamedisplay, t_over, c=t_play, q=t_quit, b=t_back)
-	s_help   = Screen(gamedisplay, t_htitle, t_line1, t_line2, t_line3, t_line4, t_line5, b=t_line6, q=t_line7)
+	s_help   = Screen(gamedisplay, t_htitle, t_hline1, t_hline2, t_hline3, t_hline4, t_hline5, b=t_hline6, q=t_hline7)
 
 def xbutton():
 	for event in pygame.event.get():
