@@ -7,7 +7,7 @@ def init():
 	windowsize = pygame.display.get_surface().get_size()
 
 	blocksize = 2
-	bikes = [Bike("Player 1", 25, windowsize[1]-25, blocksize), Bike("Player 2", windowsize[0]-25, 25, blocksize)]
+	bikes = [Bike("Player 1", 25, windowsize[1]-25, blocksize, 'r'), Bike("Player 2", windowsize[0]-25, 25, blocksize, 'd')]
 
 def reset(x, y):
 	global blocksize, bikes
@@ -66,15 +66,15 @@ def movement():
 
 def collide():
 	for head in bikes:
-			if head.dead or head.isdying:
+		if head.dead or head.isdying:
+			continue
+		for bike in bikes:
+			if bike.dead or head.isdying:
 				continue
-			for bike in bikes:
-				if bike.dead or head.isdying:
-					continue
-				for seg in bike.seglist:
-					if head.seglist[0] is not seg:
-						if head.seglist[0].x == seg.x and head.seglist[0].y == seg.y:
-							head.isdying = True
+			for seg in bike.seglist:
+				if head.seglist[0] is not seg:
+					if head.seglist[0].x == seg.x and head.seglist[0].y == seg.y:
+						head.isdying = True
 
 def border():
 	for bike in bikes:
@@ -89,21 +89,26 @@ class Bike:
 			self.x = x
 			self.y = y
 
-	def __init__(self, name, x, y, blocksize):
+	def __init__(self, name, x, y, blocksize, dir):
 		self.name 	   = name
 
 		self.blocksize = blocksize
 		self.lead_x    = x
 		self.lead_y	   = y
 
-		self.change_x  = 0
-		self.change_y  = 0
+		if (dir == 'r'):
+			self.change_x = blocksize
+			self.change_y = 0
+			self.dir = 'r'
+		elif (dir == 'd'):
+			self.change_x = 0
+			self.change_y = blocksize
+			self.dir = 'd'
 
 		self.anim	   = 0
 
 		self.seglist   = [self.Segment(x, y)]
-		self.dir       = ''
-
+		
 		self.isdying   = False
 		self.dead	   = False
 
