@@ -3,33 +3,54 @@ import random
 from color import *
 
 def init():
-	global blocksize, bikes, windowsize
+	global blocksize, bikes, windowsize, num
+	num = 2
 	windowsize = pygame.display.get_surface().get_size()
 
 	blocksize = 2
-	bikes = [Bike("Player 1", 25, windowsize[1]-25, blocksize, 'r'), Bike("Player 2", windowsize[0]-25, 25, blocksize, 'd')]
+	bikes = [Bike("Player 1", 25, windowsize[1]-25, blocksize, 'r'), Bike("Player 2", windowsize[0]-25, 25, blocksize, 'l'), Bike("Player 3", 25, 25, blocksize, 'd'), Bike("Player 4", windowsize[0]-25, windowsize[1]-25, blocksize, 'u')]
+	updatebikes()
 
-def reset(x, y):
-	global blocksize, bikes
-	blocksize = 2
-	bikes = [Bike(x, y, blocksize), Bike(x, y, blocksize)]
+def updatebikes():
+	global bikes 
+	if num == 4:
+		bikes[3].dead = False
+		bikes[2].dead = False
+		bikes[1].dead = False
+		bikes[0].dead = False
+	elif num == 3:
+		bikes[3].dead = True
+		bikes[2].dead = False
+		bikes[1].dead = False
+		bikes[0].dead = False
+	elif num == 2:
+		bikes[3].dead = True
+		bikes[2].dead = True
+		bikes[1].dead = False
+		bikes[0].dead = False
 
-def randcolor():
-	return (
-		round((random.randrange(0,255)+255)/2),
-		round((random.randrange(0,255)+255)/2),
-		round((random.randrange(0,255)+255)/2)
-	)
+def reset():
+	global bikes
+	bikes = [Bike("Player 1", 25, windowsize[1]-25, blocksize, 'r'), Bike("Player 2", windowsize[0]-25, 25, blocksize, 'l'), Bike("Player 3", 25, 25, blocksize, 'd'), Bike("Player 4", windowsize[0]-25, windowsize[1]-25, blocksize, 'u')]
+	updatebikes()
 
 def controls(key):
 	uldr = (key[pygame.K_UP], key[pygame.K_LEFT], key[pygame.K_DOWN], key[pygame.K_RIGHT])
 	wasd = (key[pygame.K_w], key[pygame.K_a], key[pygame.K_s], key[pygame.K_d])
-
-	if not bikes[1].dead:
-		keylistener(bikes[1], uldr)
+	tfgh = (key[pygame.K_t], key[pygame.K_f], key[pygame.K_g], key[pygame.K_h])
+	ijkl = (key[pygame.K_i], key[pygame.K_j], key[pygame.K_k], key[pygame.K_l])
 
 	if not bikes[0].dead:
 		keylistener(bikes[0], wasd)
+	if not bikes[1].dead:
+		keylistener(bikes[1], uldr)
+	
+	if num > 2:
+		if not bikes[2].dead:
+			keylistener(bikes[2], tfgh)
+		if num > 3:
+			if not bikes[3].dead:
+				keylistener(bikes[3], ijkl)
 
 def keylistener(bike, key):
 	if key[0] and bike.dir != 'd':
@@ -104,6 +125,14 @@ class Bike:
 			self.change_x = 0
 			self.change_y = blocksize
 			self.dir = 'd'
+		elif (dir == 'u'):
+			self.change_x = 0
+			self.change_y = -blocksize
+			self.dir = 'u'
+		elif (dir == 'l'):
+			self.change_x = -blocksize
+			self.change_y = 0
+			self.dir = 'l'
 
 		self.anim	   = 0
 
