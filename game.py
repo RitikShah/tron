@@ -7,11 +7,17 @@ from color import *
 
 def init(ws):
 	global crashed, windowsize, blocksize, fps, keynone, clock, gamedisplay, keydict, sound
-	global s_main, s_dead, s_help, t_play, t_quit, t_help, t_back, musicloop, t_empty
+	global s_main, s_dead, s_help, t_play, t_quit, t_help, t_back, musicloop, t_empty, soundf
 	pygame.init()
 
 	pygame.mixer.init()
-	musicloop = pygame.mixer.Sound('sounds/musicloop.wav')
+
+	try:
+		musicloop = pygame.mixer.Sound('data/sounds/musicloop.wav')
+		soundf = True
+	except pygame.error:
+		print('Sound file not found, disabling sound')
+		soundf = False
 
 	crashed = False
 	windowsize = ws
@@ -53,7 +59,18 @@ def init(ws):
 	s_main    = Screen(gamedisplay, t_title, c=t_play, p=t_players, q=t_quit, h=t_help, s=t_sound)
 	s_dead    = Screen(gamedisplay, t_over, c=t_play, q=t_quit, b=t_back)
 	s_help    = Screen(gamedisplay, t_htitle, t_hline1, t_hline2, t_hline3, t_hline4, t_hline5, b=t_hline6, q=t_hline7, s=t_hline8)
+'''
+def find_data_file(filename):
+    if getattr(sys, 'frozen', False):
+        # The application is frozen
+        datadir = os.path.dirname(sys.executable)
+    else:
+        # The application is not frozen
+        # Change this bit to match where you store your data files:
+        datadir = os.path.dirname(__file__)
 
+    return os.path.join(datadir, filename)
+'''
 def xbutton():
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
@@ -103,7 +120,7 @@ def key(output):
 		waitforrelease()
 		players()
 	elif output == pygame.K_s:
-		if not sound:
+		if not sound and soundf:
 			musicloop.play(-1)
 			musicloop.set_volume(0.5)
 			sound = True

@@ -8,17 +8,24 @@ def xbutton():
 			return True
 
 class Text:
+	textf = True
 	def __init__(self, screen, text, color, size, xoffset, yoffset, xcenter, ycenter):
 		windowsize = pygame.display.get_surface().get_size()
 		self.text = str(text)
-		self.font = pygame.font.Font('fonts/Courier New.ttf', size)
 		self.screen = screen
-		self.textsurf = self.font.render(self.text, True, color)
-		self.textrect = self.textsurf.get_rect()
-		self.textrect.center = (windowsize[0]/2)*xcenter + xoffset, (windowsize[1]/2)*ycenter + yoffset
-	
+		if self.textf:
+			try:
+				self.font = pygame.font.Font('data/fonts/Courier New.ttf', size)
+				self.textsurf = self.font.render(self.text, True, color)
+				self.textrect = self.textsurf.get_rect()
+				self.textrect.center = (windowsize[0]/2)*xcenter + xoffset, (windowsize[1]/2)*ycenter + yoffset
+			except OSError:
+				self.textf = False
+				print('Font file not found. Disabling text and screens')
+		
 	def displaytext(self):
-		self.screen.blit(self.textsurf, self.textrect)
+		if self.textf:
+			self.screen.blit(self.textsurf, self.textrect)
 
 class Screen:
 	class _Text(Text):
