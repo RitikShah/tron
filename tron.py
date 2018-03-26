@@ -31,41 +31,28 @@ def updatebikes():
 
 def reset():
 	global bikes
-	bikes = [Bike("Player 1", 25, windowsize[1]-25, blocksize, 'r'), Bike("Player 2", windowsize[0]-25, 25, blocksize, 'l'), Bike("Player 3", 25, 25, blocksize, 'd'), Bike("Player 4", windowsize[0]-25, windowsize[1]-25, blocksize, 'u')]
+	bikes = [Player1(), Player2(), Player3(), Player4()]
 	updatebikes()
 
 def controls(key):
-	uldr = (key[pygame.K_UP], key[pygame.K_LEFT], key[pygame.K_DOWN], key[pygame.K_RIGHT])
-	wasd = (key[pygame.K_w], key[pygame.K_a], key[pygame.K_s], key[pygame.K_d])
-	tfgh = (key[pygame.K_t], key[pygame.K_f], key[pygame.K_g], key[pygame.K_h])
-	ijkl = (key[pygame.K_i], key[pygame.K_j], key[pygame.K_k], key[pygame.K_l])
+	for bike in bikes:
+		if not bike.dead:
+			keylistener(bike)
 
-	if not bikes[0].dead:
-		keylistener(bikes[0], wasd)
-	if not bikes[1].dead:
-		keylistener(bikes[1], uldr)
-	
-	if num > 2:
-		if not bikes[2].dead:
-			keylistener(bikes[2], tfgh)
-		if num > 3:
-			if not bikes[3].dead:
-				keylistener(bikes[3], ijkl)
-
-def keylistener(bike, key):
-	if key[0] and bike.dir != 'd':
+def keylistener(bike):
+	if bike.key()[0] and bike.dir != 'd':
 		bike.change_y = -blocksize
 		bike.change_x = 0
 		bike.dir = 'u'
-	elif key[1] and bike.dir != 'r':
+	elif bike.key()[1] and bike.dir != 'r':
 		bike.change_x = -blocksize
 		bike.change_y = 0
 		bike.dir = 'l'
-	elif key[2] and bike.dir != 'u':
+	elif bike.key()[2] and bike.dir != 'u':
 		bike.change_y = blocksize
 		bike.change_x = 0
 		bike.dir = 'd'
-	elif key[3] and bike.dir != 'l':
+	elif bike.key()[3] and bike.dir != 'l':
 		bike.change_x = blocksize
 		bike.change_y = 0
 		bike.dir = 'r'
@@ -142,6 +129,9 @@ class Bike:
 		self.dead	   = False
 
 		self.color 	   = randcolor()
+	
+	def key(self):
+		return (key[pygame.K_w], key[pygame.K_a], key[pygame.K_s], key[pygame.K_d])
 
 	def trail(self):
 		self.seglist.append(self.Segment(self.lead_x, self.lead_y))
@@ -175,5 +165,30 @@ class Bike:
 			self.isdying = False
 			self.dead    = True
 
+class Player1(Bike):
+	def __init__(self):
+		super().__init__("Player 1", 25, windowsize[1]-25, blocksize, 'r')
+		
+	def key(self):
+		return (key[pygame.K_w], key[pygame.K_a], key[pygame.K_s], key[pygame.K_d])
 
+class Player2(Bike):
+	def __init__(self):
+		super().__init__("Player 2", windowsize[0]-25, 25, blocksize, 'l')
+	
+	def key(self):
+		return (key[pygame.K_UP], key[pygame.K_LEFT], key[pygame.K_DOWN], key[pygame.K_RIGHT])
 
+class Player3(Bike):
+	def __init__(self):
+		super().__init__("Player 3", 25, 25, blocksize, 'd')
+	
+	def key(self):
+		return (key[pygame.K_t], key[pygame.K_f], key[pygame.K_g], key[pygame.K_h])
+
+class Player4(Bike):
+	def __init__(self):
+		super().__init__("Player 4", windowsize[0]-25, windowsize[1]-25, blocksize, 'u')
+	
+	def key(self):
+		return (key[pygame.K_i], key[pygame.K_j], key[pygame.K_k], key[pygame.K_l])

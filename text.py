@@ -1,4 +1,5 @@
 import pygame
+import copy
 from color import *
 
 def xbutton():
@@ -7,7 +8,7 @@ def xbutton():
 			return True
 
 class Text:
-	def __init__(self, screen, text, color=white, size=20, xoffset=0, yoffset=0, xcenter=True, ycenter=True):
+	def __init__(self, screen, text, color, size, xoffset, yoffset, xcenter, ycenter):
 		windowsize = pygame.display.get_surface().get_size()
 		self.text = str(text)
 		self.font = pygame.font.Font('fonts/Courier New.ttf', size)
@@ -20,26 +21,26 @@ class Text:
 		self.screen.blit(self.textsurf, self.textrect)
 
 class Screen:
-	class _Text:
-		def __init__(self, key, text):
+	class _Text(Text):
+		def __init__(self, text, key=None):
+			super().__init__(*text)
 			if key == 'nan' or key == None:
 				self.key = None
 			else:
 				self.key = eval('pygame.K_'+key)
-			self.text = text
 
 	def __init__(self, screen, *args, **kwargs):
 		self.textlist = []
 		for a in args:
-			self.textlist.append(self._Text(None, a))
+			self.textlist.append(self._Text(a))
 		self.screen = screen
 		for k,v in kwargs.items():
-			self.textlist.append(self._Text(k,v))
+			self.textlist.append(self._Text(v, k))
 
 	def loop(self):
 		self.screen.fill(black)
 		for _t in self.textlist:
-			_t.text.displaytext()
+			_t.displaytext()
 		pygame.display.update()
 
 		while True:
