@@ -4,6 +4,7 @@ import random
 import tron
 from text import *
 from color import *
+from helptext import *
 
 def init(ws):
 	global crashed, windowsize, blocksize, fps, keynone, clock, gamedisplay, keydict, sound
@@ -40,25 +41,16 @@ def init(ws):
 
 	t_play    = (gamedisplay, 'C to play', white, 20, 0, 60, True, True)
 	t_players = (gamedisplay, 'P to change amount of players', white, 20, 0, 80, True, True)
-	t_quit    = (gamedisplay, 'Q to quit', white, 20, 0, 140, True, True)
+	t_quit    = (gamedisplay, 'Q to quit', red, 20, 0, 140, True, True)
 	t_help    = (gamedisplay, 'H for more help', white, 20, 0, 120, True, True)
 	t_back    = (gamedisplay, 'B to go back to the main menu', white, 20, 0, 100, True, True)
 	t_sound   = (gamedisplay, 'S to toggle sound', white, 20, 0, 100, True, True)
 
-	# help
-	t_htitle  = (gamedisplay, 'Help Screen', blue, 20, 0, 60, True, False)
-	t_hline1  = (gamedisplay, 'Rules: Do not touch the line the border', white, 20, 0, -40, True, True)
-	t_hline2  = (gamedisplay, 'There are two players: ', white, 20, 0, -20, True, True)
-	t_hline3  = (gamedisplay, 'Top right is player 1', white, 20, 0, 20, True, True)
-	t_hline4  = (gamedisplay, 'Bottom left is player 2', white, 20, 0, 40, True, True)
-	t_hline5  = (gamedisplay, 'Try to survive as long as possible!', white, 20, 0, 500, True, False)
-	t_hline6  = (gamedisplay, 'Good Luck! (Press B to go back)', white, 20, 0, 520, True, False)
-	t_hline7  = (gamedisplay, 'Press Q to quit', white, 20, 0, 540, True, False)
-	t_hline8  = (gamedisplay, 'Press S to toggle sound', white, 20, 0, 560, True, False)
-
+	h = Help(gamedisplay)
 	s_main    = Screen(gamedisplay, t_title, c=t_play, p=t_players, q=t_quit, h=t_help, s=t_sound)
 	s_dead    = Screen(gamedisplay, t_over, c=t_play, q=t_quit, b=t_back)
-	s_help    = Screen(gamedisplay, t_htitle, t_hline1, t_hline2, t_hline3, t_hline4, t_hline5, b=t_hline6, q=t_hline7, s=t_hline8)
+	s_help    = Screen(gamedisplay, h.t_title,  h.t_line1, h.t_line2, h.t_line3, h.t_line4, h.t_line5, h.t_line6, h.t_line7, h.t_line8, h.t_line9, h.t_line10, b=h.t_line11, s=h.t_line12, q=h.t_line13)
+
 '''
 def find_data_file(filename):
     if getattr(sys, 'frozen', False):
@@ -84,8 +76,12 @@ def newgame():
 	key(s_main.loop())
 
 def gamewin(bike):
-	s_win  = Screen(gamedisplay, (gamedisplay, bike.name + ' won!', bike.color, 80, 0, 0, True, True), c=t_play, q=t_quit, b=t_back)
-	key(s_win.loop())
+	if bike == None:
+		s_win  = Screen(gamedisplay, (gamedisplay, "It's a Tie", randcolor(), 80, 0, 0, True, True), c=t_play, q=t_quit, b=t_back)
+		key(s_win.loop())
+	else:
+		s_win  = Screen(gamedisplay, (gamedisplay, bike.name + ' won!', bike.color, 80, 0, 0, True, True), c=t_play, q=t_quit, b=t_back)
+		key(s_win.loop())
 
 def gameover():
 	key(s_dead.loop())
@@ -168,6 +164,7 @@ def gameloop():
 			for bike in tron.bikes:
 				if not bike.dead:
 					gamewin(bike)
+			gamewin(None)
 
 		tron.update()
 
